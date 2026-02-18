@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar en Tiempo Real</title>
+    <link rel="stylesheet" href="styleMapaVuelos.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <div id="fecha-hora"></div>
+        </div>
+        <div class="header-center">
+            <h1 class="titulo">Radar de Operaciones</h1>
+            <div class="subtitulo operaciones-AICM">Operaciones en Vivo</div>
+        </div>
+        <div class="header-right">
+            <img src="imgMapaVuelos/logo.png" alt="Logo Marina" class="logo-img">
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <div id="map-panel" class="panel-left">
+            <div id="map"></div>
+        </div>
+
+        <div id="resizer" class="resizer-vertical"></div>
+
+        <div id="table-panel" class="panel-right">
+            <div class="tabla-contenedor">
+                <div class="tabla-header">
+                    <span class="th" style="flex: 1;">Estado</span>
+                    <span class="th" style="flex: 0.8;">Hex</span>
+                    <span class="th" style="flex: 1;">Vuelo</span>
+                    <span class="th" style="flex: 1.2;">Pista / Ubicación</span>
+                    <span class="th" style="flex: 0.8;">Hora</span>
+                </div>
+                <ul id="operaciones-list" class="tabla-body"></ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.min.js"></script>
+    
+    <script src="FRONTMapaVuelos.js"></script>
+</body>
+</html>

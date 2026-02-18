@@ -1,0 +1,188 @@
+/* ================= RESET Y BASE ================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #1a1a1a; /* Fondo oscuro elegante */
+    color: #e0e0e0;
+    overflow: hidden; /* Evita scrollbars en la ventana principal */
+}
+
+/* ================= CABECERA PRINCIPAL ================= */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: linear-gradient(to bottom, #2c2c2c, #1a1a1a);
+    border-bottom: 2px solid #444;
+    height: 80px; /* Altura fija para la cabecera */
+    flex-shrink: 0;
+}
+
+.header-left, .header-right {
+    flex: 1;
+}
+
+.header-center {
+    flex: 2;
+    text-align: center;
+}
+
+#fecha-hora {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #00d2ff; /* Azul cian */
+}
+
+.titulo {
+    font-size: 1.8em;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.subtitulo {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.operaciones-AICM {
+    background-color: #ffc107; /* Amarillo */
+    color: #000;
+}
+
+.logo-img {
+    height: 60px;
+    float: right;
+}
+
+/* ================= CONTENEDOR PRINCIPAL (LAYOUT FLEXIBLE) ================= */
+.main-container {
+    flex: 1; /* Ocupa el resto de la altura */
+    display: flex;
+    position: relative;
+    height: calc(100vh - 80px); /* Altura total menos la cabecera */
+}
+
+/* ----- PANEL IZQUIERDO: MAPA ----- */
+.panel-left {
+    flex: 0 0 65%; /* Ancho inicial: 65% */
+    min-width: 400px;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background-color: #333; /* Color de fondo mientras carga */
+}
+
+/* ----- BARRA REDIMENSIONABLE (RESIZER) ----- */
+.resizer-vertical {
+    width: 8px;
+    background-color: #444;
+    cursor: col-resize; /* Cursor de flecha doble horizontal */
+    flex-shrink: 0;
+    border-left: 1px solid #222;
+    border-right: 1px solid #222;
+    transition: background-color 0.2s;
+    z-index: 10; /* Asegura que esté por encima */
+}
+
+.resizer-vertical:hover, .resizer-vertical.resizing {
+    background-color: #00d2ff; /* Color al pasar el mouse o arrastrar */
+}
+
+/* ----- PANEL DERECHO: TABLA ----- */
+.panel-right {
+    flex: 1; /* Ocupa el espacio restante */
+    min-width: 300px;
+    background-color: #222;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ================= ESTILOS DE LA TABLA ================= */
+.tabla-contenedor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tabla-header {
+    display: flex;
+    background-color: #333;
+    padding: 12px 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    border-bottom: 2px solid #ffc107;
+    flex-shrink: 0;
+}
+
+.th {
+    text-align: left;
+    padding: 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tabla-body {
+    list-style: none;
+    overflow-y: auto; /* Scroll vertical si la lista es larga */
+    flex: 1;
+    padding: 10px;
+}
+
+.tabla-body li {
+    display: flex;
+    padding: 8px 10px;
+    border-bottom: 1px solid #444;
+    font-size: 0.95em;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.tabla-body li:hover {
+    background-color: #2a2a2a;
+}
+
+.tabla-body .td {
+    padding: 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Colores de estado en la tabla */
+.estado-tierra { color: #ffc107; } /* Amarillo */
+.estado-vuelo { color: #28a745; }  /* Verde */
+.estado-emergencia { color: #dc3545; font-weight: bold; } /* Rojo */
+
+/* ================= SCROLLBAR PERSONALIZADO ================= */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #222;
+}
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
