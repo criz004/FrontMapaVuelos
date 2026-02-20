@@ -10,13 +10,10 @@ const PORT = process.env.PORT || 3001;
 app.use(cors()); // ¡Vital para que el mapa pueda leer los datos!
 app.use(express.json());
 
+app.use(express.static('public'));
+
 // Rutas
 app.use('/api', vuelosRoutes);
-
-// Mensaje de bienvenida
-app.get('/', (req, res) => {
-    res.send('📡 Radar API v2.0 - Funcionando ✈️');
-});
 
 // Arrancar
 app.listen(PORT, () => {

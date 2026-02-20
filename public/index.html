@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radar en Tiempo Real</title>
+    <link rel="icon" type="image/x-icon" href="imgMapaVuelos/Grupo.ico">
     <link rel="stylesheet" href="styleMapaVuelos.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
@@ -25,6 +26,21 @@
         
         <div id="map-panel" class="panel-left">
             <div id="map"></div>
+            
+            <div class="map-controls">
+                <button id="toggle-labels" class="btn-control">Mostrar Etiquetas</button>
+            </div>
+
+            <div id="flight-details" class="flight-details hidden">
+                <h3 id="det-callsign">VUELO</h3>
+                <p><b>Hex:</b> <span id="det-hex">--</span></p>
+                <p><b>Estado:</b> <span id="det-status">--</span></p>
+                <p><b>Altitud:</b> <span id="det-alt">--</span> ft</p>
+                <p><b>Velocidad:</b> <span id="det-spd">--</span> kts</p>
+                <p><b>Rumbo:</b> <span id="det-track">--</span>°</p>
+                <p><b>Ubicación:</b> <span id="det-pista">--</span></p>
+                <p><b>Squawk:</b> <span id="det-squawk">--</span></p>
+            </div>
         </div>
 
         <div id="resizer" class="resizer-vertical"></div>
@@ -45,7 +61,6 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.min.js"></script>
     
     <script src="FRONTMapaVuelos.js"></script>

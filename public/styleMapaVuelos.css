@@ -186,3 +186,92 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #777;
 }
+
+/* ================= CONTROLES SOBRE EL MAPA ================= */
+.map-controls {
+    position: absolute;
+    top: 15px;
+    right: 15px; /* Arriba a la derecha del mapa */
+    z-index: 1000;
+}
+
+.btn-control {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #ffc107;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.btn-control:hover {
+    background-color: #444;
+}
+
+.btn-control.active {
+    background-color: #ffc107;
+    color: #000;
+}
+
+/* ================= PANEL DE DETALLES (Inferior Derecho) ================= */
+.flight-details {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(26, 26, 26, 0.9);
+    border: 1px solid #444;
+    border-top: 3px solid #ffc107;
+    border-radius: 6px;
+    padding: 15px;
+    width: 220px;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+    transition: opacity 0.3s;
+}
+
+.flight-details.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.flight-details h3 {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #444;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.flight-details p {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.flight-details span {
+    color: #fff;
+    float: right;
+    font-weight: bold;
+}
+
+/* ================= ETIQUETAS DE LEAFLET (TOOLTIPS) ================= */
+/* Quitamos la caja blanca fea de leaflet y dejamos solo el texto con sombra */
+.leaflet-tooltip.flight-label {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: 
+        -1px -1px 0 #000,  
+         1px -1px 0 #000,
+        -1px  1px 0 #000,
+         1px  1px 0 #000;
+}
+.leaflet-tooltip.flight-label::before {
+    display: none; /* Oculta la flechita del tooltip */
+}
