@@ -46,7 +46,7 @@ const COLUMNAS = [
     { id: 'status', label: 'Estado', flex: 1, visible: true },
     { id: 'hex', label: 'Hex', flex: 0.8, visible: true },
     { id: 'callsign', label: 'Vuelo', flex: 1, visible: true },
-    { id: 'pista', label: 'Ubicación', flex: 1.2, visible: true },
+    { id: 'pista', label: 'Pista', flex: 1.2, visible: true },
     { id: 'hora', label: 'Evento', flex: 0.8, visible: true }, // Hora combinada
     { id: 'alt', label: 'Altitud', flex: 0.8, visible: false },
     { id: 'speed', label: 'Veloc.', flex: 0.8, visible: false },
@@ -107,12 +107,17 @@ function actualizarFechaHora() {
 }
 setInterval(actualizarFechaHora, 1000); actualizarFechaHora();
 
-function getIconoAvion() {
+function getIconoAvion(isSelected) {
+    let clasesStr = 'icono-avion-filtro';
+    if (isSelected) {
+        clasesStr += ' avion-seleccionado'; // Agregamos la clase del resplandor
+    }
+
     return L.icon({
         iconUrl: 'imgMapaVuelos/avion.png', 
-        iconSize: [24, 24], 
-        iconAnchor: [12, 12], 
-        className: 'icono-avion-filtro' 
+        iconSize: [28, 28],   // <--- ¡Aviones más grandes!
+        iconAnchor: [14, 14], // <--- Mitad del tamaño exacto
+        className: clasesStr 
     });
 }
 
@@ -154,11 +159,16 @@ async function cargarVuelos() {
             // --- PINTAR EN MAPA ---
             if (v.lat && v.lng) {
                 const rotation = v.track || v.rumbo || 0; 
+                
+                // ¿Es este el avión que el usuario tiene seleccionado?
+                const isSelected = (hexSeleccionado === v.id);
 
                 const marker = L.marker([v.lat, v.lng], {
-                    icon: getIconoAvion(),
+                    icon: getIconoAvion(isSelected),
                     rotationAngle: rotation, 
-                    rotationOrigin: 'center center'
+                    rotationOrigin: 'center center',
+                    // Hacemos que el avión seleccionado siempre flote por encima del resto
+                    zIndexOffset: isSelected ? 1000 : 0 
                 });
 
                 // --- ETIQUETAS (LABELS) ---
@@ -168,17 +178,17 @@ async function cargarVuelos() {
                         permanent: true, 
                         direction: 'top', 
                         className: 'flight-label', 
-                        offset: [0, -15] // Un poco arriba del avión
+                        offset: [0, -18] // Lo subimos un poco más porque el avión creció
                     });
                 }
 
                 // --- CLIC EN EL AVIÓN ---
                 marker.on('click', () => {
-                    hexSeleccionado = v.id; // Guardamos cuál clickeó
+                    hexSeleccionado = v.id; 
                     actualizarPanelDetalles(v);
+                    cargarVuelos(); // <--- Forzamos actualización para ver el resplandor instantáneamente
                 });
 
-                // Si este avión es el que tenemos seleccionado, actualizamos su info en vivo
                 if (hexSeleccionado === v.id) {
                     actualizarPanelDetalles(v);
                     avionSeleccionadoSigueVivo = true;
@@ -228,12 +238,13 @@ async function cargarVuelos() {
             });
             li.innerHTML = rowHTML;
             
-            // Evento click en la fila
+            // Evento click en la fila de la tabla
             li.style.cursor = 'pointer';
             li.addEventListener('click', () => {
                 hexSeleccionado = v.id;
                 actualizarPanelDetalles(v);
                 map.panTo([v.lat, v.lng]); 
+                cargarVuelos(); // <--- Aplica el resplandor al instante
             });
 
             listaOperaciones.appendChild(li);
