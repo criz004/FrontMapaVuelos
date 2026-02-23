@@ -46,14 +46,18 @@
         <div id="resizer" class="resizer-vertical"></div>
 
         <div id="table-panel" class="panel-right">
-            <div class="tabla-contenedor">
-                <div class="tabla-header">
-                    <span class="th" style="flex: 1;">Estado</span>
-                    <span class="th" style="flex: 0.8;">Hex</span>
-                    <span class="th" style="flex: 1;">Vuelo</span>
-                    <span class="th" style="flex: 1.2;">Pista / Ubicación</span>
-                    <span class="th" style="flex: 0.8;">Hora</span>
+            
+            <div class="tabla-controles">
+                <span class="tabla-titulo">Vuelos en Vivo</span>
+                <div class="dropdown">
+                    <button id="btn-columnas" class="btn-control">⚙ Columnas ▼</button>
+                    <div id="menu-columnas" class="dropdown-content hidden"></div>
                 </div>
+            </div>
+
+            <div class="tabla-contenedor">
+                <div id="tabla-header" class="tabla-header"></div>
+                
                 <ul id="operaciones-list" class="tabla-body"></ul>
             </div>
         </div>

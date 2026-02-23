@@ -41,6 +41,66 @@ document.addEventListener('mousemove', (e) => {
 });
 document.addEventListener('mouseup', () => { isResizing = false; resizer.classList.remove('resizing'); document.body.style.cursor = 'default'; map.invalidateSize(); });
 
+// --- CONFIGURACIÓN DINÁMICA DE COLUMNAS ---
+const COLUMNAS = [
+    { id: 'status', label: 'Estado', flex: 1, visible: true },
+    { id: 'hex', label: 'Hex', flex: 0.8, visible: true },
+    { id: 'callsign', label: 'Vuelo', flex: 1, visible: true },
+    { id: 'pista', label: 'Ubicación', flex: 1.2, visible: true },
+    { id: 'hora', label: 'Evento', flex: 0.8, visible: true }, // Hora combinada
+    { id: 'alt', label: 'Altitud', flex: 0.8, visible: false },
+    { id: 'speed', label: 'Veloc.', flex: 0.8, visible: false },
+    { id: 'track', label: 'Rumbo', flex: 0.6, visible: false },
+    { id: 'squawk', label: 'Squawk', flex: 0.8, visible: false },
+    { id: 'aterrizaje', label: 'H. Aterr.', flex: 0.9, visible: false },
+    { id: 'despegue', label: 'H. Desp.', flex: 0.9, visible: false }
+];
+
+// --- INICIALIZAR MENÚ DE COLUMNAS ---
+function initColumnas() {
+    const menu = document.getElementById('menu-columnas');
+    
+    // Crear checkboxes
+    COLUMNAS.forEach((col, index) => {
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="checkbox" data-index="${index}" ${col.visible ? 'checked' : ''}> ${col.label}`;
+        
+        // Evento al marcar/desmarcar
+        label.querySelector('input').addEventListener('change', (e) => {
+            COLUMNAS[e.target.dataset.index].visible = e.target.checked;
+            renderHeaders();
+            cargarVuelos(); // Forzar actualización de la tabla
+        });
+        menu.appendChild(label);
+    });
+
+    // Abrir/Cerrar menú
+    document.getElementById('btn-columnas').addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+    });
+
+    // Cerrar menú si haces clic fuera de él
+    document.addEventListener('click', (event) => {
+        const isClickInside = document.querySelector('.dropdown').contains(event.target);
+        if (!isClickInside) {
+            menu.classList.add('hidden');
+        }
+    });
+
+    renderHeaders(); // Dibujar encabezados iniciales
+}
+
+// Dibuja los <span> de los títulos según lo que esté visible
+function renderHeaders() {
+    const header = document.getElementById('tabla-header');
+    header.innerHTML = '';
+    COLUMNAS.forEach(col => {
+        if (col.visible) {
+            header.innerHTML += `<span class="th" style="flex: ${col.flex};">${col.label}</span>`;
+        }
+    });
+}
+
 // Reloj
 function actualizarFechaHora() {
     document.getElementById('fecha-hora').textContent = new Date().toLocaleString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', '');
@@ -127,31 +187,53 @@ async function cargarVuelos() {
                 marker.addTo(capaMarcadores);
             }
 
-            // --- LLENAR TABLA ---
+            // --- LLENAR TABLA (MODIFICADO PARA COLUMNAS DINÁMICAS) ---
             const li = document.createElement('li');
+            
+            // Colores de estado
             let estadoClass = 'estado-vuelo';
             if (v.status === 'EN_TIERRA') estadoClass = 'estado-tierra';
             if (v.status === 'EMERGENCIA' || v.status === 'SECUESTRO' || v.status === 'FALLA_RADIO') estadoClass = 'estado-emergencia';
 
+            // Formatear las horas para que no sean un string gigante
+            let horaAterrizaje = v.aterrizaje_time ? v.aterrizaje_time.split(' ')[1] : '--:--:--';
+            let horaDespegue = v.despegue_time ? v.despegue_time.split(' ')[1] : '--:--:--';
+            
             let horaEvento = v.last_seen;
             if(v.status === 'EN_TIERRA' && v.aterrizaje_time) horaEvento = v.aterrizaje_time;
             if(v.status === 'EN_VUELO' && v.despegue_time) horaEvento = v.despegue_time;
             horaEvento = horaEvento ? horaEvento.split(' ')[1] : '--:--:--';
 
-            li.innerHTML = `
-                <span class="td ${estadoClass}" style="flex: 1;">${v.status}</span>
-                <span class="td" style="flex: 0.8;">${v.id}</span>
-                <span class="td" style="font-weight:bold; flex: 1;">${v.callsign || 'N/A'}</span>
-                <span class="td" style="flex: 1.2;">${v.pista || '--'}</span>
-                <span class="td" style="flex: 0.8;">${horaEvento}</span>
-            `;
+            // Diccionario con los datos reales de este avión
+            const datosFila = {
+                status: `<span class="${estadoClass}">${v.status}</span>`,
+                hex: v.id,
+                callsign: `<span style="font-weight:bold;">${v.callsign || 'N/A'}</span>`,
+                pista: v.pista || '--',
+                hora: horaEvento,
+                alt: v.alt !== null ? `${v.alt}` : '--',
+                speed: v.speed !== null ? `${v.speed}` : '--',
+                track: v.track !== null ? `${v.track}°` : '--',
+                squawk: v.squawk || '--',
+                aterrizaje: horaAterrizaje,
+                despegue: horaDespegue
+            };
+
+            // Construir el HTML de la fila SOLO con las columnas visibles
+            let rowHTML = '';
+            COLUMNAS.forEach(col => {
+                if (col.visible) {
+                    rowHTML += `<span class="td" style="flex: ${col.flex};">${datosFila[col.id]}</span>`;
+                }
+            });
+            li.innerHTML = rowHTML;
             
-            // Opcional: Hacer click en la tabla también selecciona el avión
+            // Evento click en la fila
             li.style.cursor = 'pointer';
             li.addEventListener('click', () => {
                 hexSeleccionado = v.id;
                 actualizarPanelDetalles(v);
-                map.panTo([v.lat, v.lng]); // Mueve el mapa hacia el avión
+                map.panTo([v.lat, v.lng]); 
             });
 
             listaOperaciones.appendChild(li);
@@ -168,5 +250,6 @@ async function cargarVuelos() {
     }
 }
 
+initColumnas();
 cargarVuelos();
 setInterval(cargarVuelos, 1500);
