@@ -20,6 +20,7 @@ async function getVuelosEnVivo(req, res) {
                 Estado as status,
                 Squawk as squawk,
                 PistaProbable as pista,
+                TipoAeronave as tipo,
                 Format(HoraAterrizaje, 'yyyy-MM-dd HH:mm:ss') as aterrizaje_time,
                 Format(HoraDespegue, 'yyyy-MM-dd HH:mm:ss') as despegue_time,
                 Format(UltimaActualizacion, 'yyyy-MM-dd HH:mm:ss') as last_seen

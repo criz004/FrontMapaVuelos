@@ -336,11 +336,24 @@ body {
 }
 
 /* ================= FILTROS Y ESTADOS DE ICONOS ================= */
+/* 1. Estado Normal (Blanco por defecto) */
 .icono-avion-filtro {
-    transition: filter 0.2s ease-in-out; /* Transición suave al seleccionar */
+    transition: filter 0.2s ease-in-out; 
 }
 
-/* Glow (Resplandor) para el avión seleccionado */
+/* 2. Normal + Seleccionado (Blanco + Glow Amarillo) */
 .avion-seleccionado {
     filter: drop-shadow(0px 0px 6px #ffc107) drop-shadow(0px 0px 12px #ffc107) !important;
+}
+
+/* 3. Emergencia (Teñido a Rojo puro) */
+.avion-emergencia {
+    /* Truco: brightness(0) lo hace negro, y el resto de filtros lo tiñen exactamente a #FF0000 */
+    filter: brightness(0) invert(14%) sepia(88%) saturate(6288%) hue-rotate(353deg) brightness(96%) contrast(124%) !important;
+}
+
+/* 4. Emergencia + Seleccionado (Teñido a Rojo + Glow Rojo) */
+.avion-emergencia-seleccionado {
+    /* La misma cadena para el color rojo, pero le sumamos el drop-shadow rojo al final */
+    filter: brightness(0) invert(14%) sepia(88%) saturate(6288%) hue-rotate(353deg) brightness(96%) contrast(124%) drop-shadow(0px 0px 6px #ff0000) drop-shadow(0px 0px 12px #ff0000) !important;
 }

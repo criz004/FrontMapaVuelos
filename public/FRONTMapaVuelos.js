@@ -107,16 +107,30 @@ function actualizarFechaHora() {
 }
 setInterval(actualizarFechaHora, 1000); actualizarFechaHora();
 
-function getIconoAvion(isSelected) {
+function getIconoAvion(isSelected, status, tipo) {
     let clasesStr = 'icono-avion-filtro';
-    if (isSelected) {
-        clasesStr += ' avion-seleccionado'; // Agregamos la clase del resplandor
+    let isEmergency = (status === 'EMERGENCIA' || status === 'SECUESTRO' || status === 'FALLA_RADIO');
+    
+    // Lógica de colores (El hack mágico)
+    if (isEmergency && isSelected) {
+        clasesStr += ' avion-emergencia-seleccionado';
+    } else if (isEmergency && !isSelected) {
+        clasesStr += ' avion-emergencia';
+    } else if (!isEmergency && isSelected) {
+        clasesStr += ' avion-seleccionado';
     }
 
+    // Lógica de formas (Tipos de aeronave)
+    let urlImagen = 'imgMapaVuelos/avion.svg'; // Comercial por defecto
+    if (tipo === 'HELICOPTERO') urlImagen = 'imgMapaVuelos/helicoptero.svg';
+    if (tipo === 'MILITAR') urlImagen = 'imgMapaVuelos/militar.svg';
+    if (tipo === 'CARGO') urlImagen = 'imgMapaVuelos/cargo.svg';
+    if (tipo === 'LIGERO') urlImagen = 'imgMapaVuelos/ligero.svg';
+
     return L.icon({
-        iconUrl: 'imgMapaVuelos/avion.png', 
-        iconSize: [28, 28],   // <--- ¡Aviones más grandes!
-        iconAnchor: [14, 14], // <--- Mitad del tamaño exacto
+        iconUrl: urlImagen, 
+        iconSize: [28, 28],   
+        iconAnchor: [14, 14], 
         className: clasesStr 
     });
 }
@@ -164,7 +178,7 @@ async function cargarVuelos() {
                 const isSelected = (hexSeleccionado === v.id);
 
                 const marker = L.marker([v.lat, v.lng], {
-                    icon: getIconoAvion(isSelected),
+                    icon: getIconoAvion(isSelected, v.status, v.tipo),
                     rotationAngle: rotation, 
                     rotationOrigin: 'center center',
                     // Hacemos que el avión seleccionado siempre flote por encima del resto
